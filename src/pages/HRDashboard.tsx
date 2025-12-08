@@ -12,11 +12,11 @@ const HRDashboard = () => {
     return sessionStorage.getItem("hr_authenticated") === "true";
   });
 
-  useEffect(() => {
-    const loadData = () => {
-      setRegistrations(getRegistrations());
-    };
+  const loadData = () => {
+    setRegistrations(getRegistrations());
+  };
 
+  useEffect(() => {
     loadData();
     
     // Listen for storage changes (in case of multiple tabs)
@@ -59,7 +59,7 @@ const HRDashboard = () => {
 
         {/* Table Section */}
         <div className="animate-slide-up">
-          <RegistrationsTable registrations={registrations} />
+          <RegistrationsTable registrations={registrations} onStatusChange={loadData} />
         </div>
       </main>
     </div>
