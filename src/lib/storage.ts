@@ -1,4 +1,4 @@
-import { Registration } from "@/types/registration";
+import { Registration, ApprovalStatus } from "@/types/registration";
 
 const STORAGE_KEY = "kings_tech_registrations";
 
@@ -11,16 +11,34 @@ export const getRegistrations = (): Registration[] => {
   }
 };
 
-export const saveRegistration = (registration: Omit<Registration, "id" | "createdAt">): Registration => {
+export const saveRegistration = (registration: Omit<Registration, "id" | "createdAt" | "approvalStatus">): Registration => {
   const registrations = getRegistrations();
   const newRegistration: Registration = {
     ...registration,
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
+    approvalStatus: "pending",
   };
   registrations.push(newRegistration);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(registrations));
   return newRegistration;
+};
+
+export const updateApprovalStatus = (id: string, status: ApprovalStatus): void => {
+  const registrations = getRegistrations();
+  const index = registrations.findIndex((r) => r.id === id);
+  if (index !== -1) {
+    registrations[index].approvalStatus = status;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(registrations));
+  }
+};
+
+const getApprovalLabel = (status: ApprovalStatus): string => {
+  switch (status) {
+    case "approved": return "Aprovado";
+    case "rejected": return "Reprovado";
+    default: return "Pendente";
+  }
 };
 
 export const exportToCSV = (registrations: Registration[]): string => {
@@ -35,6 +53,7 @@ export const exportToCSV = (registrations: Registration[]): string => {
     "Observações",
     "Data de Participação",
     "Data de Inscrição",
+    "Status",
   ];
 
   const rows = registrations.map((r) => [
@@ -48,6 +67,7 @@ export const exportToCSV = (registrations: Registration[]): string => {
     r.observations || "",
     r.participationDate,
     new Date(r.createdAt).toLocaleDateString("pt-BR"),
+    getApprovalLabel(r.approvalStatus),
   ]);
 
   const csvContent = [headers, ...rows]

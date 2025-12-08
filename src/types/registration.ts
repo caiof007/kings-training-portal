@@ -1,3 +1,5 @@
+export type ApprovalStatus = "pending" | "approved" | "rejected";
+
 export interface Registration {
   id: string;
   fullName: string;
@@ -9,6 +11,7 @@ export interface Registration {
   observations?: string;
   participationDate: string;
   createdAt: string;
+  approvalStatus: ApprovalStatus;
 }
 
 export const DEPARTMENTS = [
