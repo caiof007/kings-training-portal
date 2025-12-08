@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { RegistrationsTable } from "@/components/RegistrationsTable";
+import { HRPasswordGate } from "@/components/HRPasswordGate";
 import { Registration } from "@/types/registration";
 import { getRegistrations } from "@/lib/storage";
 import { ClipboardList } from "lucide-react";
 
 const HRDashboard = () => {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem("hr_authenticated") === "true";
+  });
 
   useEffect(() => {
     const loadData = () => {
@@ -26,6 +30,10 @@ const HRDashboard = () => {
       clearInterval(interval);
     };
   }, []);
+
+  if (!isAuthenticated) {
+    return <HRPasswordGate onAuthenticated={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
