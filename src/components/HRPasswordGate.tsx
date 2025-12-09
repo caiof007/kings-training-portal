@@ -7,7 +7,7 @@ import { Lock, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Senha padrão - pode ser alterada aqui
-const HR_PASSWORD = "rh2024";
+const HR_PASSWORD = "Kingsman";
 
 interface HRPasswordGateProps {
   onAuthenticated: () => void;
